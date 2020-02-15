@@ -6,6 +6,7 @@
   var setupPlayerElement = setup.querySelector('.setup-player');
   var setupWizardFormElement = document.forms['setup-wizard-form'];
 
+
   var onWizardCoatClick = function () {
     var wizardCoatColor = setupPlayerElement.querySelector('.wizard-coat').style.fill = window.util.getRandomElement(window.data.coatColors);
     setupWizardFormElement['coat-color'].value = wizardCoatColor;
@@ -37,6 +38,14 @@
     } else {
       userNameInput.setCustomValidity('');
     }
+  });
+
+  // Работаем с отправкой формы на сервер
+  setupWizardFormElement.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(setupWizardFormElement), function () {
+      setup.classList.add('hidden');
+    });
+    evt.preventDefault();
   });
 
 })();
