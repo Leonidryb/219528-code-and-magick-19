@@ -44,7 +44,7 @@
   setupWizardFormElement.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(setupWizardFormElement), function () {
       setup.classList.add('hidden');
-    });
+    }, window.data.onError);
     evt.preventDefault();
   });
 
