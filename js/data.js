@@ -7,9 +7,7 @@ window.data = (function () {
   var WIZARDS_COUNT = 4;
 
   var userDialog = document.querySelector('.setup');
-
   var similarListElement = userDialog.querySelector('.setup-similar-list');
-
 
   var similarWizardTemplate = document.querySelector('#similar-wizard-template')
     .content;
@@ -24,9 +22,11 @@ window.data = (function () {
     return wizardElement;
   };
 
-  var onSuccesLoadWizards = function (wizards) {
+  var renderWizards = function (wizards) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < WIZARDS_COUNT; i++) {
+    var takeCountWizards = wizards.length > WIZARDS_COUNT ? WIZARDS_COUNT : wizards.length;
+    similarListElement.innerHTML = '';
+    for (var i = 0; i < takeCountWizards; i++) {
       fragment.appendChild(renderWizard(wizards[i]));
     }
     similarListElement.appendChild(fragment);
@@ -46,12 +46,18 @@ window.data = (function () {
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
+  var onSuccesLoadWizards = function (data) {
+    window.backend.wizardsList = data;
+    window.setup.updateWizards();
+  };
+
   window.backend.load(onSuccesLoadWizards, onError);
 
   return {
     coatColors: COAT_COLORS,
     eyeColors: EYE_COLORS,
     fireballColors: FIREBALL_COLORS,
+    renderWizards: renderWizards,
     onError: onError
   };
 })();

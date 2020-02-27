@@ -1,6 +1,42 @@
 'use strict';
 
-(function () {
+window.setup = (function () {
+
+  var wizardCoatColor;
+  var wizardEyesColor;
+
+  var getRank = function (wizard) {
+    var rank = 0;
+
+    if (wizard.colorCoat === wizardCoatColor) {
+      rank += 2;
+    }
+    if (wizard.colorEyes === wizardEyesColor) {
+      rank += 1;
+    }
+
+    return rank;
+  };
+
+  var namesComparator = function (left, right) {
+    if (left > right) {
+      return 1;
+    } else if (left < right) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+
+  var updateWizards = function () {
+    window.data.renderWizards(window.backend.wizardsList.slice().sort(function (left, right) {
+      var rankDiff = getRank(right) - getRank(left);
+      if (rankDiff === 0) {
+        rankDiff = namesComparator(left.name, right.name);
+      }
+      return rankDiff;
+    }));
+  };
 
   var setup = document.querySelector('.setup');
   var setupPlayerElement = setup.querySelector('.setup-player');
@@ -8,13 +44,15 @@
 
 
   var onWizardCoatClick = function () {
-    var wizardCoatColor = setupPlayerElement.querySelector('.wizard-coat').style.fill = window.util.getRandomElement(window.data.coatColors);
+    wizardCoatColor = setupPlayerElement.querySelector('.wizard-coat').style.fill = window.util.getRandomElement(window.data.coatColors);
     setupWizardFormElement['coat-color'].value = wizardCoatColor;
+    window.optimization.debounce(updateWizards);
   };
 
   var onWizardEyesClick = function () {
-    var wizardEyesColor = setupPlayerElement.querySelector('.wizard-eyes').style.fill = window.util.getRandomElement(window.data.eyeColors);
+    wizardEyesColor = setupPlayerElement.querySelector('.wizard-eyes').style.fill = window.util.getRandomElement(window.data.eyeColors);
     setupWizardFormElement['eyes-color'].value = wizardEyesColor;
+    window.optimization.debounce(updateWizards);
   };
 
   var onFireBallClick = function () {
@@ -47,5 +85,9 @@
     }, window.data.onError);
     evt.preventDefault();
   });
+
+  return {
+    updateWizards: updateWizards
+  };
 
 })();
