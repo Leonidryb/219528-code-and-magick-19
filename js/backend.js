@@ -14,6 +14,7 @@ window.backend = (function () {
     SERVER_OFF: 521
   };
   var TIMEOUT_IN_MS = 10000; // 10 s;
+  var wizardsList = [];
 
   var save = function (data, onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -105,7 +106,8 @@ window.backend = (function () {
 
   return {
     save: save,
-    load: load
+    load: load,
+    wizardsList: wizardsList
   };
 
 })();
