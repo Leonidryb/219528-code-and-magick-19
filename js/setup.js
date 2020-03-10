@@ -2,6 +2,8 @@
 
 window.setup = (function () {
 
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
   var wizardCoatColor;
   var wizardEyesColor;
 
@@ -84,6 +86,29 @@ window.setup = (function () {
       setup.classList.add('hidden');
     }, window.data.onError);
     evt.preventDefault();
+  });
+
+  // Работаем с изменением аватара
+  var fileChooser = setupWizardFormElement['avatar'];
+  var preview = setup.querySelector('.setup-user-pic');
+
+  fileChooser.addEventListener('change', function () {
+    var file = fileChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        preview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
   });
 
   return {
